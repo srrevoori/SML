@@ -1,3 +1,6 @@
+val maxSubArraySum = foldl (fn (i, (curr, max)) => (Int.max(curr + i, i), Int.max(Int.max(curr + i, i), max))) (0, valOf Int.minInt)
+val maxSum = #2 o maxSubArraySum
+
 fun lcs (S, T) = 
   let
     fun h (i, j) = Word.xorb (Word.fromInt i, Word.fromInt j)
