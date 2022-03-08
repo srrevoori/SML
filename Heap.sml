@@ -1,3 +1,11 @@
+structure RandomizedHeap = (* 3 line Heap *)
+  struct
+    datatype 'a randheap = Null | Node of 'a * 'a randheap * 'a randheap
+
+    fun meld ((Null, a) | (a, Null)) = a
+      | meld (n1 as Node (x, l1, r1), n2 as Node(y, _, _)) = if x > y then meld (n2, n1) else if Random.flip () = 1 then Node(x, meld (l1, n2), r1) else Node(x, l1, meld (r1, n2))
+  end
+  
 signature PQ =
 sig
   structure Key : ORD_KEY
@@ -60,15 +68,6 @@ struct
   fun deleteMin EMPTY = (NONE, EMPTY)
     | deleteMin (NODE {data=kv, left=l, right=r, ...}) = (SOME kv, meld (l, r))
 end
-
-
-structure RandomizedHeap = 
-  struct
-    datatype 'a randheap = Null | Node of 'a * 'a randheap * 'a randheap
-
-    fun meld ((Null, a) | (a, Null)) = a
-      | meld (n1 as Node (x, l1, r1), n2 as Node(y, _, _)) = if x > y then meld (n2, n1) else if Random.flip () = 1 then Node(x, meld (l1, n2), r1) else Node(x, l1, meld (r1, n2))
-  end
 
 functor BinaryHeap (structure E : ORDERED) :> PriorityQueue = 
   struct
