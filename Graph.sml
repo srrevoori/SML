@@ -1,6 +1,3 @@
-type graph = int list array
-
-
 fun dfsAll G visit revisit finish s = 
   let
     fun dfs (v, (sigma, X)) = 
