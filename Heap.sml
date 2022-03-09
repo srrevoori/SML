@@ -16,7 +16,7 @@ sig
 
   val $ : Key.ord_key -> pq
   val fromList : Key.ord_key list -> pq
-  val fromVector : Key.ord_key vector -> pq 
+  val fromVector : Key.ord_key vector -> pq
 
   val size : pq -> int
 
@@ -24,6 +24,8 @@ sig
   val findMin : pq -> Key.ord_key option
   val deleteMin : pq -> Key.ord_key option * pq
   val meld : pq * pq -> pq
+  
+  val iterate : ('a * Key.ord_key -> 'a) -> 'a -> pq -> 'a 
 end
 
 functor LeftistHeap (structure Key : ORD_KEY) :> PQ where type Key.ord_key = Key.ord_key =
@@ -67,6 +69,11 @@ struct
 
   fun deleteMin EMPTY = (NONE, EMPTY)
     | deleteMin (NODE {data=kv, left=l, right=r, ...}) = (SOME kv, meld (l, r))
+    
+  fun iterate f b pq = 
+    case deleteMin pq of
+      (NONE, EMPTY) => b
+    | (SOME kv, pq') => iterate f (f(b, kv)) pq'
 end
 
 functor BinaryHeap (structure E : ORDERED) :> PriorityQueue = 
