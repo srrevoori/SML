@@ -7,9 +7,7 @@ structure StringKey : ORD_KEY =
 structure RB = RedBlackMapFn(StringKey)
 fun manberMyers s = let
   fun sortBucket bucket order res = let
-    fun ins(d, s, i) = case RB.find (d, s) of 
-        NONE => RB.insert (d, s, [i])
-      | SOME x => RB.insert(d, s, i::x)
+    fun ins(d, s, i) = RB.insert(d, s, i::(RB.lookup(d, s) handle _ => []))
     val d = foldl (fn (i, h) => ins (h, String.substring(s, i, order) handle _ => String.extract(s, i, NONE) , i)) RB.empty bucket  
     in foldl (fn ([x], r) => x::r | (v, r) => sortBucket v (order * 2) r) res (RB.listItems d) end
   in List.rev (sortBucket (List.tabulate(String.size s, fn i => i)) 1 []) end
